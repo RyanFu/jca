@@ -1,6 +1,6 @@
 html, ul, li, form, img, body, td, table, tr, th, ol, html, h1, h2, h3, h4, h5, h6, p,* { margin: 0; padding: 0; font-size: 12px;}
 html { font-size: 13px; height: 100%;}
-body { text-align: left; height: 100%; _width:100%;color: #161616; text-rendering: optimizelegibility;font:13px/1.5 Helvetica,"Hiragino Sans GB","Microsoft Yahei",Tahoma,simsun,Arial,STHeiti;font-weight: normal; line-height: 180%; }
+body { text-align: left; background:url(http://static.guang.com/images/ui/bg.gif); height: 100%; _width:100%;color: #333; text-rendering: optimizelegibility;font:13px/1.5 Helvetica,"Hiragino Sans GB","Microsoft Yahei",Tahoma,simsun,Arial,STHeiti;font-weight: normal; line-height: 180%; }
 html, body {overflow-x: hidden;}
 ul { list-style-type: none; }
 a {text-decoration: none;outline:none;hide-focus: expression(this.hideFocus=true); /*IE6、IE7*/}

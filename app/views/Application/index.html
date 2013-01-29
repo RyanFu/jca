@@ -1,16 +1,45 @@
 #{extends 'main.html' /}
-#{set title:'Home' /}
+#{set title:'电影列表' /}
 
 <style>
-    #sortable { list-style-type: none; margin: 0; padding: 0;}
-    #sortable li {margin: 3px 3px 3px 0;font-size:0.8em; padding: 1px; float: left; width: 150px; height: 150px; text-align: center; }
-    #sortable li div{border:1px solid;border-color:black;width:130px;height:140px;background:#FEF8BE;cursor: pointer;}
-    .sortNum{border-bottom:1px solid black;width:130px;display:block;}
+    #sortable { list-style-type: none; margin-left: 20px; padding: 0;}
+    #sortable li {margin: 3px 3px 3px 0;font-size:0.8em; padding: 1px; float: left; text-align: center; }
+    /* 九宫格 */
+    .nineGrid { position:relative;margin-right:20px;padding:10px;color:#666;background-color:#fff;float:left;margin-top:20px; }
+    .lastNineGrid { margin-right:0px!important; }
+    .nineGrid h4 { line-height:30px;height:30px;font-size:16px; }
+    .nineGrid h4 a { color:#333; }
+    .nineGrid h4 a:hover { color:#5AD;text-decoration:none; }
+    .nineGrid h4 a span{font-size:14px;margin-left:5px;}
+    .nineGrid .bd { margin-top:7px;background:url(@{'/public/images/nineGrid_bg.gif'}) no-repeat 0px 3px; }
+    .nineGrid .bd img{ width:120px;height:160px;border:0;float:left;margin:3px 3px 0px 0px;}
+    .nineGrid .bd img.last{margin-right:0;}
+    .nineGrid .ft { padding-top:15px; }
+    .nineGrid .ft .user-info{float:left;line-height:25px;width:146px;white-space:nowrap;word-wrap:normal;word-break:normal;text-overflow:ellipsis;-o-text-overflow:ellipsis;overflow:hidden;}
+    .nineGrid .ft .user-img{display:inline-block}
+    .nineGrid .ft .user-img img{height:25;width:25px;}
+    .nineGrid .ft .user-name{margin-left:10px;line-height:25px;color:#333;}
+    .nineGrid .ft .user-name:hover{text-decoration:none;}
+    .nineGrid .icon-dashai{position:absolute;height:66px;width:65px;right:-1px;top:-1px;text-indent:-100px;overflow:hidden;background:url(http://static.guang.com/images/ui/icon_topic_dasai2.png) no-repeat;}
+    .nineGrid .btn-dashai {border-top:1px #dedede dotted;padding:10px 0 0 52px;margin-top:10px;}
+    .nineGrid .btn-dashai a{display:block;width:107px;height:30px;line-height:30px;text-align:center;font-size:14px;color:#fff;font-weight:700;background:url(http://static.guang.com/images/ui/contribute.png) no-repeat;}
+    .nineGrid .btn-dashai a:hover{text-decoration:none;}
 </style>
 
 <ul id="sortable">
 #{list items:items, as:'t'}
-    <li><div class="border"><span class="sortNum"></span><br><input type="hidden" value="${t.id}" class="hiddenId"><span style="width:80px;">${t.name}</span><br><img width=80 src="@{Application.proxy}?url=${t.cover.urlEncode()}"/></div></li>
+    <li>
+        <div class="nineGrid ">
+            <div class="hd">
+                <h4><a href="@{Application.detail}?id=${t.id}" title="${t.name}" target="_blank">${t.name}</a></h4>
+            </div>
+            <div class="bd clearfix">
+                <a href="@{Application.detail}?id=${t.id}" target="_blank">
+                    <img alt="${t.name}" title="${t.name}" src="@{Application.proxy}?url=${t.cover.urlEncode()}">
+                </a>
+            </div>
+        </div>
+    </li>
 #{/list}
 </ul>
 

@@ -1,0 +1,110 @@
+#{extends 'main.html' /} #{set title:'登陆' /}
+<style type="text/css">
+    body {background: #3d4765; }
+    /**login*/
+    .login{margin:100px auto; width: 1000px;}
+    .login-content{
+        color:#ffffff;
+    }
+    .login-nav{
+        background:#343e5b;
+        text-align:center;
+        padding:0 15px 0 25px;
+        height:50px;
+        line-height:50px;
+        position:relative;
+    }
+    .login-item{ float:left; margin-right:5px}
+    .login-item label{ margin:0 3px}
+    .login-item .ipt-txt{
+        width:130px;height:29px;
+        padding-left:4px;
+    }
+    .btn-login{
+        border:0 none;
+        background:url(@{'/public/images/btn-login.png'}) no-repeat;
+        width:77px;
+        height:29px;
+        cursor:pointer;
+        display:inline-block;
+        margin:0 10px;
+    }
+    .help {margin-top: 100px;}
+</style>
+<div class="login">
+    <div class="login-content">
+        <div class="layout login-nav">
+            <form id="J_LoginForm" method="post" action="@{withes.Secure.authenticate}">
+                <div class="login-item">
+                    <label for="J_LoginId">帐 号</label>
+                    <input type="text" tabindex="1" maxlength="32" class="ipt-txt" id="J_LoginId" name="username">
+                </div>
+                <div class="login-item">
+                    <label for="J_Password">密 码</label>
+                    <input type="password" tabindex="2" maxlength="32" class="ipt-txt" id="J_Password" name="password">
+                </div>
+                <div class="login-item">
+                    <button type="submit" id="J_SubmitBtn" class="btn-login">&nbsp;</button>
+                </div>
+            </form>
+        </div>
+        <div class="layout help">
+            <ul>
+                <li> <a href="#" target="_blank" style="color: #E2EFFF;">杰创科技 </a>版权所有 2012-2013</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        void function(){
+            var $form = $('#J_LoginForm'),$submitBtn = $('#J_SubmitBtn');
+            var $loginId = $('#J_LoginId'),$password = $('#J_Password');
+            var _class = {
+                //初始化绑定事件
+                init: function(){
+                    $submitBtn.on('click',_class.event.clickSubmitBtn);
+                },
+                //事件
+                event: {
+                    validateFormData: function(){
+                        $loginId.removeClass("error_border");
+                        $password.removeClass("error_border");
+                        if($.trim($loginId.val()) ==='' ){
+                            $loginId.addClass("error_border");
+                            $password.removeClass("error_border");
+                            return false;
+                        }
+
+                        if($password.val()===''){
+                            $password.addClass("error_border");
+                            $loginId.removeClass("error_border");
+                            return false;
+                        }
+                        return true;
+                    },
+                    //登陆事件
+                    clickSubmitBtn: function(e){
+                        e.preventDefault();
+                        var options={
+                            url: $form.attr("action"),
+                            type: 'POST',
+                            dataType: 'json' ,
+                            beforeSubmit: _class.event.validateFormData,
+                            success: function(data){
+                                if(data.result){
+                                    window.location.href=base_url + data.redirectUrl;
+                                    return;
+                                }else{
+                                    $loginId.addClass("error_border");
+                                }
+                            }
+                        };
+                        $form.ajaxSubmit(options);
+                    }
+                }
+            };
+            _class.init();
+        }();
+    });
+</script>

@@ -28,6 +28,9 @@ public class Movie extends Model {
     /** 评分 */
     public String rate;
 
+    /** 顺序号 */
+    public int no;
+
     /** 电影详细信息，包括了几部几集 */
     public List<MovieItem> details = new ArrayList<MovieItem>();
 

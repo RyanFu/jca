@@ -1,3 +1,7 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+error.user.no.exist=用户名为:%s不存在
+error.user.password.not.match=密码不正确
+label.setting.user.role.ADMIN=只允许管理员访问
+label.setting.user.role.Operator=只允许运营人员访问
