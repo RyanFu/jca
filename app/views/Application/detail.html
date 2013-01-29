@@ -1,6 +1,136 @@
 #{extends 'main.html' /}
 #{set title:'详情页' /}
 
-<style>
-
+<style type="text/css">
+    .item-block {background-color: white;padding:10px; margin-top: 10px;}
 </style>
+
+<div id="p_detail">
+    <div class="nineGrid ">
+        <div class="hd">
+            <h4><a href="#" title="${movie.name}" target="_blank">${movie.name}</a>(<span class="hl">${movie.rate}分</span>)</h4>
+        </div>
+        <div class="bd clearfix">
+            <a href="#" target="_blank">
+                <img alt="${movie.name}" title="${movie.name}" src="@{Application.proxy}?url=${movie.cover.urlEncode()}">
+            </a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="toolbar">
+        <a href="javascript:;" class="topic-follow-btn" onclick="copyItem();">复制一季</a>
+        <a href="javascript:;" class="topic-follow-btn" style="margin-right: 10px;" onclick="saveAll();">保存全部</a>
+    </div>
+    <div class="clear"></div>
+    <div class="details">
+        #{list items:movie.details,as:'item'}
+        <div class="item-block">
+            <h4 class="hl">第<span class="season">${item.season}</span>季</h4>
+            <h4>来自<span class="from">${item.from}</span></h4>
+            <div>简介：<span class="brief">${item.brief}</span></div>
+            <div>演员：<span class="actors">${item.actors.join(",")}</span></div>
+            <div>
+                <a href="javascript:;" class="topic-follow-btn" onclick="copyEpisode(this);">添加一集</a>
+            </div>
+            <div class="clear"></div>
+            <ul>
+                #{list item.episodes,as:'e'}
+                <li class="fieldset episode">
+                    <a href="javascript:;" onclick="del(this)">删除这集</a>
+                    <table>
+                        <tr>
+                            <td class="title">集</td>
+                            <td class="value"><input class="e" value="${e.e}"></td>
+                        </tr>
+                        <tr>
+                            <td class="title">视频地址</td>
+                            <td class="value"><input class="url" value="${e.url}"></td>
+                        </tr>
+                    </table>
+                </li>
+                #{/list}
+            </ul>
+        </div>
+        #{/list}
+    </div>
+</div>
+<div id="item-block-tpl" class="item-block hide">
+    <div class="fieldset">
+        <table>
+            <tr>
+                <td class="title">季</td>
+                <td class="value"><input class="season" value=""></td>
+            </tr>
+            <tr>
+                <td class="title">来自</td>
+                <td class="value"><input class="from" value=""></td>
+            </tr>
+            <tr>
+                <td class="title">简介</td>
+                <td class="value"><textarea class="brief" cols="60" rows="8"></textarea></td>
+            </tr>
+            <tr>
+                <td class="title">演员（以逗号隔开）</td>
+                <td class="value"><input class="actors" value=""></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <a href="javascript:;" class="topic-follow-btn" onclick="copyEpisode(this);">添加一集</a>
+    </div>
+    <div class="clear"></div>
+    <ul>
+        <li class="fieldset episode">
+            <table>
+                <tr>
+                    <td class="title">集</td>
+                    <td class="value"><input class="e" value=""></td>
+                </tr>
+                <tr>
+                    <td class="title">视频地址</td>
+                    <td class="value"><input class="url" value=""></td>
+                </tr>
+            </table>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript">
+    function copyItem() {
+        var tpl = $('#item-block-tpl').clone();
+        $(".details").prepend(tpl);
+        tpl.css("display","block");
+    }
+    function copyEpisode(e) {
+        var $e = $(e);
+        var ul = $e.parents(".item-block").find("ul");
+        ul.append(ul.find(".episode:last").clone());
+    }
+    function del(e) {
+        var $e = $(e);
+        $e.parent().remove();
+    }
+    function saveAll() {
+        var details = [];
+        $(".details .item-block").each(function() {
+            var season = $(this).find(".season").val() || $(this).find(".season").html();
+            var from = $(this).find(".from").val() || $(this).find(".from").html();
+            var brief = $(this).find(".brief").val() || $(this).find(".brief").html();
+            var actors = $(this).find(".actors").val() || $(this).find(".actors").html();
+            var episodes = [];
+            $(this).find(".episode").each(function() {
+                var e = $(this).find(".e").val();
+                var url = $(this).find(".url").val();
+                episodes.push({e: e, url: url});
+            });
+            details.push({season:season,from:from,brief:brief,actors:actors,episodes:JSON.stringify(episodes)});
+        });
+        $.post("@{ajax.Movies.update}", {id:"${movie.id}", details:details}, function(data) {
+            if (data && data.error) {
+                alert(data.error);
+            } else {
+                alert("保存成功！将刷新页面");
+                window.location.reload();
+            }
+        });
+    }
+</script>

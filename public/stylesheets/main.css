@@ -16,6 +16,7 @@ img {border: none;}
 .fr { float: right; }
 .fc { zoom: 1; overflow: hidden; }
 .clear { clear: both; }
+.hl {color:red;}
 .inline-block {display:inline-block;*display:inline;zoom:1;}
 .round {-moz-border-radius:6px;-webkit-border-radius: 6px;border-radius: 6px;border-color:#d3d3d3;}
 .round3 {-moz-border-radius:3px;-webkit-border-radius: 3px;border-radius: 3px;border-color:#d3d3d3;}
@@ -38,3 +39,49 @@ img {border: none;}
 
 *body {*background-color: #ece9d8;*background-image:url(about:blank);*background-attachment:fixed; /* 必须地，防抖动 */}
 *body .fixed {*position:absolute;*top:expression(eval(document.documentElement.scrollTop+10)); /* 顶部固定悬浮 */}
+
+#sortable { list-style-type: none; margin-left: 20px; margin-top:50px;padding: 0;}
+#sortable li {margin: 3px 3px 3px 0;font-size:0.8em; padding: 1px; float: left; text-align: center; }
+/* 九宫格 */
+.nineGrid { position:relative;margin-right:20px;padding:10px;color:#666;background-color:#fff;float:left;margin-top:20px; }
+.lastNineGrid { margin-right:0px!important; }
+.nineGrid h4 { line-height:30px;height:30px;font-size:16px; }
+.nineGrid h4 a { color:#333; }
+.nineGrid h4 a:hover { color:#5AD;text-decoration:none; }
+.nineGrid h4 a span{font-size:14px;margin-left:5px;}
+.nineGrid .bd { margin-top:7px;background:url(../images/nineGrid_bg.gif) no-repeat 0px 3px; }
+.nineGrid .bd img{ width:120px;height:160px;border:0;float:left;margin:3px 3px 0px 0px;}
+.nineGrid .bd img.last{margin-right:0;}
+.nineGrid .ft { padding-top:15px; }
+.nineGrid .ft .user-info{float:left;line-height:25px;width:146px;white-space:nowrap;word-wrap:normal;word-break:normal;text-overflow:ellipsis;-o-text-overflow:ellipsis;overflow:hidden;}
+.nineGrid .ft .user-img{display:inline-block}
+.nineGrid .ft .user-img img{height:25;width:25px;}
+.nineGrid .ft .user-name{margin-left:10px;line-height:25px;color:#333;}
+.nineGrid .ft .user-name:hover{text-decoration:none;}
+.nineGrid .icon-dashai{position:absolute;height:66px;width:65px;right:-1px;top:-1px;text-indent:-100px;overflow:hidden;background:url(http://static.guang.com/images/ui/icon_topic_dasai2.png) no-repeat;}
+.nineGrid .btn-dashai {border-top:1px #dedede dotted;padding:10px 0 0 52px;margin-top:10px;}
+.nineGrid .btn-dashai a{display:block;width:107px;height:30px;line-height:30px;text-align:center;font-size:14px;color:#fff;font-weight:700;background:url(http://static.guang.com/images/ui/contribute.png) no-repeat;}
+.nineGrid .btn-dashai a:hover{text-decoration:none;}
+
+.index-nav {height: 40px;width: 100%;background: url(../images/index-nav-icon.png) repeat-x 0 -130px;}
+.index-nav ul {overflow: hidden;}
+.index-nav li {float: left;padding-right: 20px;line-height: 20px;margin: 10px 0;}
+.index-nav li.right {padding-right: 0;}
+.index-nav-fixed {z-index: 9900;position: fixed;_position: absolute;top: 0;left: 0;}
+.layout980 {width: 980px;margin: 0 auto;}
+
+.topic-follow-btn{height: 24px;width: 80px;border-radius: 2px;text-align: center;display: inline-block;line-height: 24px;background: #86B835;color: white !important;border: 0;float:right;}
+.topic-follow-btn:hover{text-decoration: none;}
+
+.fieldset {margin: 20px;}
+.fieldset table {width: 100%;border-collapse: collapse;}
+.fieldset tr {height:40px; line-height:40px;}
+.fieldset td {border:1px solid #dcdcdc;text-align:center;}
+.fieldset td.title {width:100px;background-color:#f5f5f5;}
+.fieldset td.value {background-color:#fff;text-align:left;padding-left:20px;}
+.input-text, .fieldset td.value input[type=text] {width:300px;height:30px;line-height:24px;padding-left:2px;border:1px solid #dcdcdc;}
+.fieldset .comment textarea {border:1px solid #dcdcdc; margin:10px;padding:2px;}
+
+.fieldset .value input {width: 280px;border: 1px solid #dcdcdc;height: 24px;line-height: 24px;}
+
+#p_detail {width: 1000px;margin:20px auto;}

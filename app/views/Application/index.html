@@ -1,37 +1,25 @@
 #{extends 'main.html' /}
 #{set title:'电影列表' /}
 
-<style>
-    #sortable { list-style-type: none; margin-left: 20px; padding: 0;}
-    #sortable li {margin: 3px 3px 3px 0;font-size:0.8em; padding: 1px; float: left; text-align: center; }
-    /* 九宫格 */
-    .nineGrid { position:relative;margin-right:20px;padding:10px;color:#666;background-color:#fff;float:left;margin-top:20px; }
-    .lastNineGrid { margin-right:0px!important; }
-    .nineGrid h4 { line-height:30px;height:30px;font-size:16px; }
-    .nineGrid h4 a { color:#333; }
-    .nineGrid h4 a:hover { color:#5AD;text-decoration:none; }
-    .nineGrid h4 a span{font-size:14px;margin-left:5px;}
-    .nineGrid .bd { margin-top:7px;background:url(@{'/public/images/nineGrid_bg.gif'}) no-repeat 0px 3px; }
-    .nineGrid .bd img{ width:120px;height:160px;border:0;float:left;margin:3px 3px 0px 0px;}
-    .nineGrid .bd img.last{margin-right:0;}
-    .nineGrid .ft { padding-top:15px; }
-    .nineGrid .ft .user-info{float:left;line-height:25px;width:146px;white-space:nowrap;word-wrap:normal;word-break:normal;text-overflow:ellipsis;-o-text-overflow:ellipsis;overflow:hidden;}
-    .nineGrid .ft .user-img{display:inline-block}
-    .nineGrid .ft .user-img img{height:25;width:25px;}
-    .nineGrid .ft .user-name{margin-left:10px;line-height:25px;color:#333;}
-    .nineGrid .ft .user-name:hover{text-decoration:none;}
-    .nineGrid .icon-dashai{position:absolute;height:66px;width:65px;right:-1px;top:-1px;text-indent:-100px;overflow:hidden;background:url(http://static.guang.com/images/ui/icon_topic_dasai2.png) no-repeat;}
-    .nineGrid .btn-dashai {border-top:1px #dedede dotted;padding:10px 0 0 52px;margin-top:10px;}
-    .nineGrid .btn-dashai a{display:block;width:107px;height:30px;line-height:30px;text-align:center;font-size:14px;color:#fff;font-weight:700;background:url(http://static.guang.com/images/ui/contribute.png) no-repeat;}
-    .nineGrid .btn-dashai a:hover{text-decoration:none;}
-</style>
-
+<div class="index-nav index-nav-fixed">
+    <div class="layout980">
+        <ul>
+            <li>拖动图片可以排序哦(⊙o⊙)</li>
+            <li>
+                <a href="javascript:;" class="topic-follow-btn" onclick="addMovie();">新增电影</a>
+            </li>
+            <li class="right">
+                <a href="javascript:;" class="topic-follow-btn" onclick="saveOrder();">保存排序</a>
+            </li>
+        </ul>
+    </div>
+</div>
 <ul id="sortable">
 #{list items:items, as:'t'}
-    <li>
+    <li id="${t.id}" no="${t.no}">
         <div class="nineGrid ">
             <div class="hd">
-                <h4><a href="@{Application.detail}?id=${t.id}" title="${t.name}" target="_blank">${t.name}</a></h4>
+                <h4><a href="@{Application.detail}?id=${t.id}" title="${t.name}" target="_blank">${t.name}</a>(<span class="hl">${t.rate}分</span>)</h4>
             </div>
             <div class="bd clearfix">
                 <a href="@{Application.detail}?id=${t.id}" target="_blank">
@@ -43,8 +31,71 @@
 #{/list}
 </ul>
 
+<iframe id="fr_hidden" name="fr_hidden" style="display:none" src="about:blank"></iframe>
+<div id="add-movie-form" title="创建新的电影" class="hide fieldset">
+    <p class="validateTips">所有的项都是必填的</p>
+    <form action="@{ajax.Movies.save}" target="fr_hidden" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="no" class="no">
+        <table>
+            <tr>
+                <td class="title">名称</td>
+                <td class="value"><input name="name"></td>
+            </tr>
+            <tr>
+                <td class="title">封面图URL</td>
+                <td class="value"><input name="cover"></td>
+            </tr>
+            <tr>
+                <td class="title">封面标题</td>
+                <td class="value"><input name="cover_title"></td>
+            </tr>
+            <tr>
+                <td class="title">评分</td>
+                <td class="value"><input name="rate"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
 <script type="text/javascript">
-    $(function() {
+    // 保存电影的顺序
+    function saveOrder() {
+        var data = [];
+        $("#sortable li").each(function() {
+            data.push($(this).attr("id") + "=" + $(this).attr("no"));
+        });
+        $.post("@{ajax.Movies.saveOrder}", {order: data.join(";")}, function(data) {
+            if (data && data.status == "200") {
+                alert("成功保存排序，界面将刷新。。。");
+                window.location.reload();
+            }
+        })
+    }
+
+    // 新增电影
+    function addMovie() {
+        $( "#add-movie-form" ).dialog({
+            autoOpen: true,
+            width: 500,
+            height: 350,
+            modal: true,
+            buttons: {
+                "创建": function() {
+                    $("#add-movie-form form").submit();
+                    alert("创建后，请调整顺序再次点击‘保存顺序’");
+                    window.location.reload();
+                },
+                "取消": function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+                $( this ).dialog( "close" );
+            }
+        });
+    }
+
+    $(document).ready(function() {
         $("#sortable").sortable({
             stop: function() {
                 sortNum();
@@ -55,7 +106,7 @@
         function sortNum() {
             var num = 1;
             $("#sortable li").each(function() {
-                $(this).find(".sortNum").html(num);
+                $(this).attr("no", num);
                 num++;
             })
         }

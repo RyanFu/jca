@@ -1,6 +1,5 @@
 package jobs;
 
-import libs.EasyMap;
 import libs.Objects;
 import libs.WS;
 import models.Episode;
@@ -17,7 +16,6 @@ import org.jsoup.select.Elements;
 import play.Logger;
 import play.jobs.Job;
 import play.jobs.On;
-import play.jobs.OnApplicationStart;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -32,7 +30,6 @@ import java.util.*;
 public class MovieSpider extends Job {
     private static ObjectMapper mapper = new ObjectMapper();
     private static int page = 1;
-    private static int count = 1;
     private static final String url_tpl = "http://video.baidu.com/tvplay/?area=%C3%C0%B9%FA&actor=&type=&start=&order=hot&pn=";
 
     @Override
@@ -58,13 +55,15 @@ public class MovieSpider extends Job {
                 String detailUrl = link.absUrl("href");
                 String name = element.select(".v-desc .v-title a").first().html();
                 Logger.info("正在抓取名称：%s", name);
-                Movie movie = new Movie();
+                Movie movie = Movie.find("byName", name).first();
+                if (movie == null) {
+                    movie = new Movie();
+                    movie.id = (Movie.count() + 1) + "";
+                }
                 movie.name = name;
                 movie.cover = cover;
                 movie.cover_title = coverTitle;
-                movie.id = (count++) + "";
-                List<MovieItem> details = getDetails(movie, "http://video.baidu.com/v?word=" + URLEncoder.encode("美剧 " + name, "GBK"));
-                movie.details = details;
+                movie.details = getDetails(movie, "http://video.baidu.com/v?word=" + URLEncoder.encode("美剧 " + name, "GBK"));
                 movie.save();
             } catch (Exception e) {
                 Logger.error(e.getMessage(), e);
