@@ -10,7 +10,7 @@
 
 <ul id="sortable">
 #{list items:items, as:'t'}
-    <li><div class="border"><span class="sortNum"></span><br><input type="hidden" value="${t._id}" class="hiddenId"><span style="width:80px;">${t.name}</span><br><img width=80 src="${t.cover}"/></div></li>
+    <li><div class="border"><span class="sortNum"></span><br><input type="hidden" value="${t.id}" class="hiddenId"><span style="width:80px;">${t.name}</span><br><img width=80 src="@{Application.proxy}?url=${t.cover.urlEncode()}"/></div></li>
 #{/list}
 </ul>
 
