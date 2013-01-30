@@ -106,8 +106,10 @@
         ul.append(ul.find(".episode:last").clone());
     }
     function del(e) {
-        var $e = $(e);
-        $e.parent().remove();
+        if (window.confirm("你确定要删除吗？")) {
+            var $e = $(e);
+            $e.parent().remove();
+        }
     }
     function saveAll() {
         var details = [];

@@ -1,3 +1,4 @@
+import models.Setting;
 import models.User;
 import models.enums.Role;
 import play.jobs.Job;
@@ -29,6 +30,14 @@ public class Bootstrap extends Job {
             admin.password = Codec.hexMD5("secure,no see");
             admin.role = Role.ADMIN;
             admin.save();
+        }
+
+        Setting feedback = Setting.find("byType", "feedback").first();
+        if (feedback == null) {
+            feedback = new Setting();
+            feedback.title = "用户反馈";
+            feedback.type = "feedback";
+            feedback.save();
         }
     }
 }

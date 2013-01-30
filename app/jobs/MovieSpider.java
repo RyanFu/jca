@@ -1,5 +1,6 @@
 package jobs;
 
+import libs.DBCounter;
 import libs.Objects;
 import libs.WS;
 import models.Episode;
@@ -16,6 +17,7 @@ import org.jsoup.select.Elements;
 import play.Logger;
 import play.jobs.Job;
 import play.jobs.On;
+import play.jobs.OnApplicationStart;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -25,7 +27,7 @@ import java.util.*;
  * @author wujinliang
  * @since 1/29/13
  */
-//@OnApplicationStart
+@OnApplicationStart
 @On("0 0 1 * * ?")
 public class MovieSpider extends Job {
     private static ObjectMapper mapper = new ObjectMapper();
@@ -58,7 +60,7 @@ public class MovieSpider extends Job {
                 Movie movie = Movie.find("byName", name).first();
                 if (movie == null) {
                     movie = new Movie();
-                    movie.id = (Movie.count() + 1) + "";
+                    movie.id = DBCounter.generateUniqueCounter(Movie.class) + "";
                 }
                 movie.name = name;
                 movie.cover = cover;
