@@ -37,7 +37,6 @@ public class MovieSpider extends Job {
     @Override
     public void doJob() throws Exception {
         Logger.info("开始处理电影抓取Job");
-        Movie.deleteAll();
         crawl();
     }
 
