@@ -53,7 +53,7 @@ public class MovieGenerator extends Job {
                     if (StringUtils.isBlank(season)) item.season = "1";
                 }
                 Logger.info("正在生成文件:" + movie.name + ", 大小为：" + movie.details.size());
-                IOUtils.write(mapper.writeValueAsString(new EasyMap<String, Object>().easyPutAll(map).easyPut("details", movie.details)), new FileOutputStream(new File(DEST_FOLDER, movie.id + ".html")));
+                IOUtils.write(mapper.writeValueAsString(new EasyMap<String, Object>().easyPutAll(map).easyPut("details", movie.details)), new FileOutputStream(new File(DEST_FOLDER, movie.id + ".html")), "UTF-8");
             }
         }
         List<Setting> settings = Setting.findAll();
@@ -65,11 +65,11 @@ public class MovieGenerator extends Job {
         Long count = DBCounter.generateUniqueCounter(Setting.class);
         String map = mapper.writeValueAsString(new EasyMap<String, Object>("checksum", count + "").easyPut("data", data).easyPut("setting", settingData));
         Logger.info("正在上传文件:" + movies.size());
-        IOUtils.write(map, new FileOutputStream(new File(DEST_FOLDER, "list.html")));
+        IOUtils.write(map, new FileOutputStream(new File(DEST_FOLDER, "list.html")), "UTF-8");
 
         // 修改check_update
-        IOUtils.write("{\"code\":\"nok\"}", new FileOutputStream(new File(DEST_FOLDER, "check_update_crc="+(count - 1)+".html")));
-        IOUtils.write("{\"code\":\"ok\"}", new FileOutputStream(new File(DEST_FOLDER, "check_update_crc="+(count)+".html")));
+        IOUtils.write("{\"code\":\"nok\"}", new FileOutputStream(new File(DEST_FOLDER, "check_update_crc="+(count - 1)+".html")), "UTF-8");
+        IOUtils.write("{\"code\":\"ok\"}", new FileOutputStream(new File(DEST_FOLDER, "check_update_crc="+(count)+".html")), "UTF-8");
 
         Logger.info("完成静态文件的生成");
     }

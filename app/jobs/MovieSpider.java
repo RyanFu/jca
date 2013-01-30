@@ -84,7 +84,6 @@ public class MovieSpider extends Job {
         if (blocks == null){
             System.out.println(url);
             System.out.println(body);
-            System.exit(-1);
             return result;
         }
         for (String block : blocks) {
