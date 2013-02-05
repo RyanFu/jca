@@ -38,7 +38,7 @@ public class Movies extends Controller {
         renderJSON(new EasyMap<String, String>("status", "200"));
     }
 
-    public static void save(String name, String cover, String cover_title, String rate) {
+    public static void save(String name, String cover, String cover_title, double rate) {
         Movie movie = Movie.find("byName", name).first();
         if (movie == null) {
             movie = new Movie();
@@ -80,7 +80,7 @@ public class Movies extends Controller {
                     item.episodes = es;
                     items.add(item);
                 }
-                movie.details = items;
+                movie.details = mapper.writeValueAsString(items);
                 movie.save();
             } catch (Exception e) {
                 renderJSON(new EasyMap<String, String>("error", e.getMessage()));

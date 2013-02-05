@@ -1,11 +1,13 @@
 package jobs;
 
+import libs.Constant;
 import libs.DBCounter;
 import libs.Objects;
 import libs.WS;
 import models.Episode;
 import models.Movie;
 import models.MovieItem;
+import models.Setting;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -15,9 +17,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import play.Logger;
+import play.db.jpa.JPA;
 import play.jobs.Job;
 import play.jobs.On;
-import play.jobs.OnApplicationStart;
+import services.CacheService;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -27,18 +30,20 @@ import java.util.*;
  * @author wujinliang
  * @since 1/29/13
  */
-@OnApplicationStart
+//@OnApplicationStart
 @On("0 0 1 * * ?")
 public class MovieSpider extends Job {
     private static ObjectMapper mapper = new ObjectMapper();
     private static int page = 1;
     private static final String url_tpl = "http://video.baidu.com/tvplay/?area=%C3%C0%B9%FA&actor=&type=&start=&order=hot&pn=";
-    private static int count;
 
     @Override
     public void doJob() throws Exception {
         Logger.info("开始处理电影抓取Job");
         crawl();
+
+        DBCounter.generateMySQLCounter(Setting.class);
+        CacheService.delete(Constant.CACHE_PREFIX + "movies");
     }
 
     private static void crawl() {
@@ -65,10 +70,19 @@ public class MovieSpider extends Job {
                 movie.name = name;
                 movie.cover = cover;
                 movie.cover_title = coverTitle;
-                movie.details = getDetails(movie, "http://video.baidu.com/v?word=" + URLEncoder.encode("美剧 " + name, "GBK"));
-                movie.save();
+                Set<MovieItem> details = getDetails(movie, "http://video.baidu.com/v?word=" + URLEncoder.encode("美剧 " + name, "GBK"));
+                if (!details.isEmpty()) {
+                    movie.details = mapper.writeValueAsString(details);
+
+                    if (!JPA.em().getTransaction().isActive()) {
+                        JPA.em().getTransaction().begin();
+                    }
+                    movie.save();
+                    JPA.em().flush();
+                    JPA.em().getTransaction().commit();
+                }
             } catch (Exception e) {
-                Logger.error(e.getMessage(), e);
+                Logger.error(e, e.getMessage());
             }
         }
         crawl();
@@ -133,11 +147,11 @@ public class MovieSpider extends Job {
                 item.episodes = new LinkedHashSet<Episode>(episodes);
                 result.add(item);
             } catch (IOException e) {
-                Logger.error(e.getMessage(), e);
+                Logger.error(e, e.getMessage());
             }
         }
         if (rating == null) rating = (8 + Math.floor(RandomUtils.nextFloat() * 10) / 10) + "";
-        movie.rate = rating;
+        movie.rate = NumberUtils.toDouble(rating);
         Collections.sort(result, new Comparator<MovieItem>() {
             public int compare(MovieItem o1, MovieItem o2) {
                 return NumberUtils.toInt(o1.season) < NumberUtils.toInt(o2.season) ? 1 : -1;

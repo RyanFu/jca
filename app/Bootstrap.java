@@ -18,7 +18,7 @@ public class Bootstrap extends Job {
         if (linjb == null) {
             linjb = new User();
             linjb.name = "linjb";
-            linjb.password = Codec.hexMD5("secure,no see");
+            linjb.password = Codec.hexMD5("ljb123");
             linjb.role = Role.Operator;
             linjb.save();
         }
@@ -27,7 +27,7 @@ public class Bootstrap extends Job {
         if (admin == null) {
             admin = new User();
             admin.name = "admin";
-            admin.password = Codec.hexMD5("secure,no see");
+            admin.password = Codec.hexMD5("kanios@2013");
             admin.role = Role.ADMIN;
             admin.save();
         }

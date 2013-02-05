@@ -1,15 +1,10 @@
 package models;
 
-import play.db.jpa.Model;
-
-import javax.persistence.Entity;
-
 /**
  * @author wujinliang
  * @since 1/29/13
  */
-@Entity
-public class Episode extends Model {
+public class Episode {
     /** 第几集 */
     public int e;
 

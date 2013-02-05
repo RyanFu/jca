@@ -3,7 +3,9 @@ package libs;
 //import com.google.code.morphia.Datastore;
 //import com.google.code.morphia.utils.LongIdEntity.StoredId;
 //import play.modules.morphia.Model;
+
 import models.Counter;
+import play.db.jpa.JPA;
 
 public class DBCounter {
 
@@ -28,6 +30,7 @@ public class DBCounter {
     }
 
     public static <T> long generateMySQLCounter(Class<T> clazz) {
+        if (!JPA.em().getTransaction().isActive()) JPA.em().getTransaction().begin();
         String key = clazz.getSimpleName();
         Counter mCounter = Counter.find("byName", key).first();
         if (mCounter == null) {
@@ -39,6 +42,8 @@ public class DBCounter {
             mCounter.count = mCounter.count + 1;
             mCounter.save();
         }
+        JPA.em().flush();
+        JPA.em().getTransaction().commit();
         return mCounter.count;
     }
 
