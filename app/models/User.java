@@ -1,9 +1,9 @@
 package models;
 
-import com.google.code.morphia.annotations.Entity;
 import models.enums.Role;
-import play.modules.morphia.Model;
+import play.db.jpa.Model;
 
+import javax.persistence.Entity;
 import java.io.Serializable;
 
 @Entity

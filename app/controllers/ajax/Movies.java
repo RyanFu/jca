@@ -10,10 +10,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import play.mvc.Controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author wujinliang
@@ -50,7 +47,7 @@ public class Movies extends Controller {
             movie.cover_title = cover_title;
             movie.rate = rate;
             movie.no = 0;
-            movie.id = DBCounter.generateUniqueCounter(Movie.class) + "";
+            movie.bid = DBCounter.generateMySQLCounter(Movie.class) + "";
             movie.save();
         } else {
             renderJSON(new EasyMap<String, String>("error", "此" + name + "已经存在"));
@@ -63,7 +60,7 @@ public class Movies extends Controller {
             renderJSON(new EasyMap<String, String>("error", id + "的电影不存在"));
         } else {
             try {
-                List<MovieItem> items = new ArrayList<MovieItem>();
+                Set<MovieItem> items = new LinkedHashSet<MovieItem>();
                 for (Map detail : details) {
                     MovieItem item = new MovieItem();
                     item.season = detail.get("season").toString();
@@ -71,7 +68,7 @@ public class Movies extends Controller {
                     item.brief = detail.get("brief").toString();
                     item.actors = Arrays.asList(StringUtils.split(detail.get("actors").toString(), ","));
 
-                    List<Episode> es = new ArrayList<Episode>();
+                    Set<Episode> es = new LinkedHashSet<Episode>();
                     List<Map> episodes = mapper.readValue(detail.get("episodes").toString(), List.class);
                     for (Map episode : episodes) {
                         Episode e = new Episode();

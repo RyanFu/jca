@@ -1,13 +1,15 @@
 package models;
 
-import com.google.code.morphia.annotations.Embedded;
+import play.db.jpa.Model;
+
+import javax.persistence.Entity;
 
 /**
  * @author wujinliang
  * @since 1/29/13
  */
-@Embedded
-public class Episode {
+@Entity
+public class Episode extends Model {
     /** 第几集 */
     public int e;
 

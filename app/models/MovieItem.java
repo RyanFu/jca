@@ -1,17 +1,19 @@
 package models;
 
-import com.google.code.morphia.annotations.Embedded;
+import play.db.jpa.Model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author wujinliang
  * @since 1/29/13
  */
-@Embedded
-public class MovieItem {
+@Entity
+public class MovieItem extends Model {
     /** 第几季 */
     public String season;
 
@@ -22,9 +24,10 @@ public class MovieItem {
     public String brief;
 
     /** 演员 */
+    @Embedded
     public List<String> actors = new ArrayList<String>();
 
     /** 集数 */
-    public List<Episode> episodes = new ArrayList<Episode>();
-
+    @OneToMany(fetch= FetchType.LAZY, cascade = {CascadeType.ALL})
+    public Set<Episode> episodes = new HashSet<Episode>();
 }

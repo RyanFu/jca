@@ -15,7 +15,7 @@ import java.util.List;
 public class Application extends Controller {
     @Check({Role.Operator})
     public static void index() {
-        List<Movie> items = Movie.find().order("no").asList();
+        List<Movie> items = Movie.find("order by no asc").fetch();
         render(items);
     }
 

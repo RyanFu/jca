@@ -33,6 +33,7 @@ public class MovieSpider extends Job {
     private static ObjectMapper mapper = new ObjectMapper();
     private static int page = 1;
     private static final String url_tpl = "http://video.baidu.com/tvplay/?area=%C3%C0%B9%FA&actor=&type=&start=&order=hot&pn=";
+    private static int count;
 
     @Override
     public void doJob() throws Exception {
@@ -59,7 +60,7 @@ public class MovieSpider extends Job {
                 Movie movie = Movie.find("byName", name).first();
                 if (movie == null) {
                     movie = new Movie();
-                    movie.id = DBCounter.generateUniqueCounter(Movie.class) + "";
+                    movie.bid = DBCounter.generateMySQLCounter(Movie.class) + "";
                 }
                 movie.name = name;
                 movie.cover = cover;
@@ -73,7 +74,7 @@ public class MovieSpider extends Job {
         crawl();
     }
 
-    private static List<MovieItem> getDetails(Movie movie, String url) {
+    private static Set<MovieItem> getDetails(Movie movie, String url) {
         sleep();
         List<MovieItem> result = new ArrayList<MovieItem>();
         Logger.info("正在抓取Detail界面：%s", url);
@@ -83,7 +84,7 @@ public class MovieSpider extends Job {
         if (blocks == null){
             System.out.println(url);
             System.out.println(body);
-            return result;
+            return new LinkedHashSet<MovieItem>(result);
         }
         for (String block : blocks) {
             try {
@@ -100,7 +101,7 @@ public class MovieSpider extends Job {
                     es = (List<Map>)mapper.readValue(b, Map.class).get("videos");
                 }
                 if ("tudou.com".equals(site.get("site_url"))) {
-                    return result;
+                    return new LinkedHashSet<MovieItem>(result);
                 }
                 List<Episode> episodes = new ArrayList<Episode>();
                 for (Map e : es) {
@@ -129,7 +130,7 @@ public class MovieSpider extends Job {
                 item.from = Objects.de4(from, "");
                 item.season = Objects.de4(season, "");
                 item.actors = (List<String>) map.get("actor");
-                item.episodes = episodes;
+                item.episodes = new LinkedHashSet<Episode>(episodes);
                 result.add(item);
             } catch (IOException e) {
                 Logger.error(e.getMessage(), e);
@@ -142,7 +143,7 @@ public class MovieSpider extends Job {
                 return NumberUtils.toInt(o1.season) < NumberUtils.toInt(o2.season) ? 1 : -1;
             }
         });
-        return result;
+        return new LinkedHashSet<MovieItem>(result);
     }
 
     private static void sleep() {

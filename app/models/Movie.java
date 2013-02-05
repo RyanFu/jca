@@ -1,11 +1,12 @@
 package models;
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import play.modules.morphia.Model;
+import play.db.jpa.Model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author wujinliang
@@ -13,8 +14,7 @@ import java.util.List;
  */
 @Entity
 public class Movie extends Model {
-    @Id
-    public String id;
+    public String bid;
 
     /** 名称 */
     public String name;
@@ -32,15 +32,6 @@ public class Movie extends Model {
     public int no;
 
     /** 电影详细信息，包括了几部几集 */
-    public List<MovieItem> details = new ArrayList<MovieItem>();
-
-    @Override
-    public Object getId() {
-        return id;
-    }
-
-    @Override
-    protected void setId_(Object id) {
-        this.id = id.toString();
-    }
+    @OneToMany(fetch= FetchType.LAZY, cascade = {CascadeType.ALL})
+    public Set<MovieItem> details = new HashSet<MovieItem>();
 }

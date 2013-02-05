@@ -35,7 +35,7 @@ public class MovieGenerator extends Job {
     @Override
     public void doJob() throws Exception {
         Logger.info("开始生成电影静态文件");
-        List<Movie> movies = Movie.find().order("no").asList();
+        List<Movie> movies = Movie.find("order by no asc").fetch();
         List<Map> data = new ArrayList<Map>();
         for (Movie movie : movies) {
             if (!movie.details.isEmpty()) {
@@ -43,7 +43,7 @@ public class MovieGenerator extends Job {
                 if (StringUtils.isBlank(rate)) {
                     rate = (8 + Math.floor(RandomUtils.nextFloat() * 10) / 10) + "";
                 }
-                EasyMap<String, Object> map = new EasyMap<String, Object>("id", movie.id).easyPut("rate", NumberUtils.toFloat(rate))
+                EasyMap<String, Object> map = new EasyMap<String, Object>("id", movie.bid).easyPut("rate", NumberUtils.toFloat(rate))
                         .easyPut("name", movie.name).easyPut("cover", movie.cover).easyPut("cover_title", movie.cover_title);
                 data.add(map);
 
@@ -53,7 +53,7 @@ public class MovieGenerator extends Job {
                     if (StringUtils.isBlank(season)) item.season = "1";
                 }
                 Logger.info("正在生成文件:" + movie.name + ", 大小为：" + movie.details.size());
-                IOUtils.write(mapper.writeValueAsString(new EasyMap<String, Object>().easyPutAll(map).easyPut("details", movie.details)), new FileOutputStream(new File(DEST_FOLDER, movie.id + ".html")), "UTF-8");
+                IOUtils.write(mapper.writeValueAsString(new EasyMap<String, Object>().easyPutAll(map).easyPut("details", movie.details)), new FileOutputStream(new File(DEST_FOLDER, movie.bid + ".html")), "UTF-8");
             }
         }
         List<Setting> settings = Setting.findAll();
@@ -62,7 +62,7 @@ public class MovieGenerator extends Job {
             settingData.add(new EasyMap<String, Object>("title", setting.title).easyPut("type", setting.type).easyPut("value", setting.value));
         }
 
-        Long count = DBCounter.generateUniqueCounter(Setting.class);
+        Long count = DBCounter.generateMySQLCounter(Setting.class);
         String map = mapper.writeValueAsString(new EasyMap<String, Object>("checksum", count + "").easyPut("data", data).easyPut("setting", settingData));
         Logger.info("正在上传文件:" + movies.size());
         IOUtils.write(map, new FileOutputStream(new File(DEST_FOLDER, "list.html")), "UTF-8");
