@@ -1,5 +1,7 @@
 package libs;
 
+import play.Play;
+
 public class Constant {
 	public static final String COOKIE_LOGIN_USER = "loginuser";
 	public static final String COOKIE_LAST_LOGIN = "lastlogin";
@@ -7,4 +9,5 @@ public class Constant {
 	public static final String CACHE_USER_LAST_LOGIN_PREFIX = "lastlogin_";
 	public static final String COOKIE_REMEMBER = "rememberme";
 	public static final int ADMIN_ROLE_LEVEL = 50;
+    public final static String CACHE_PREFIX = Play.configuration.getProperty("play.name");
 }
