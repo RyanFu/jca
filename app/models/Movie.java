@@ -1,11 +1,9 @@
 package models;
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import play.modules.morphia.Model;
+import play.db.jpa.Model;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * @author wujinliang
@@ -32,15 +30,5 @@ public class Movie extends Model {
     public int no;
 
     /** 电影详细信息，包括了几部几集 */
-    public List<MovieItem> details = new ArrayList<MovieItem>();
-
-    @Override
-    public Object getId() {
-        return id;
-    }
-
-    @Override
-    protected void setId_(Object id) {
-        this.id = id.toString();
-    }
+    public String details;
 }

@@ -1,16 +1,12 @@
 package models;
 
-import com.google.code.morphia.annotations.Embedded;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author wujinliang
  * @since 1/29/13
  */
-@Embedded
 public class MovieItem {
     /** 第几季 */
     public String season;

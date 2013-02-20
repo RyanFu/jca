@@ -83,7 +83,7 @@ public class Movies extends Controller {
                     item.episodes = es;
                     items.add(item);
                 }
-                movie.details = items;
+                movie.details = mapper.writeValueAsString(items);
                 movie.save();
             } catch (Exception e) {
                 renderJSON(new EasyMap<String, String>("error", e.getMessage()));

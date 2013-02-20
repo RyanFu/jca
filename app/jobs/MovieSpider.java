@@ -64,7 +64,7 @@ public class MovieSpider extends Job {
                 movie.name = name;
                 movie.cover = cover;
                 movie.cover_title = coverTitle;
-                movie.details = getDetails(movie, "http://video.baidu.com/v?word=" + URLEncoder.encode("美剧 " + name, "GBK"));
+                movie.details = mapper.writeValueAsString(getDetails(movie, "http://video.baidu.com/v?word=" + URLEncoder.encode("美剧 " + name, "GBK")));
                 movie.save();
             } catch (Exception e) {
                 Logger.error(e.getMessage(), e);

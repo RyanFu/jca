@@ -35,7 +35,7 @@ public class MovieGenerator extends Job {
     @Override
     public void doJob() throws Exception {
         Logger.info("开始生成电影静态文件");
-        List<Movie> movies = Movie.find().order("no").asList();
+        List<Movie> movies = Movie.find("order by no asc").fetch();
         List<Map> data = new ArrayList<Map>();
         for (Movie movie : movies) {
             if (!movie.details.isEmpty()) {
@@ -48,11 +48,12 @@ public class MovieGenerator extends Job {
                 data.add(map);
 
                 // 生成单个电影文件
-                for (MovieItem item : movie.details) {
+                List<MovieItem> details = mapper.readValue(movie.details, List.class);
+                for (MovieItem item : details) {
                     String season = item.season;
                     if (StringUtils.isBlank(season)) item.season = "1";
                 }
-                Logger.info("正在生成文件:" + movie.name + ", 大小为：" + movie.details.size());
+                Logger.info("正在生成文件:" + movie.name + ", 大小为：" + details.size());
                 IOUtils.write(mapper.writeValueAsString(new EasyMap<String, Object>().easyPutAll(map).easyPut("details", movie.details)), new FileOutputStream(new File(DEST_FOLDER, movie.id + ".html")), "UTF-8");
             }
         }

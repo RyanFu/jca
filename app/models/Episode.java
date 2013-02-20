@@ -1,12 +1,9 @@
 package models;
 
-import com.google.code.morphia.annotations.Embedded;
-
 /**
  * @author wujinliang
  * @since 1/29/13
  */
-@Embedded
 public class Episode {
     /** 第几集 */
     public int e;
