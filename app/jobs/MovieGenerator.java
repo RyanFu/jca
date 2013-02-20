@@ -26,13 +26,13 @@ import java.util.Map;
  * @author wujinliang
  * @since 1/29/13
  */
-@OnApplicationStart
-@On("0 0 5 * * ?")
-public class MovieGenerator extends Job {
+//@OnApplicationStart
+//@On("0 0 5 * * ?")
+@Deprecated
+public class MovieGenerator {
     private static String DEST_FOLDER = Play.configuration.getProperty("movie.dest.folder");
     private static ObjectMapper mapper = new ObjectMapper();
 
-    @Override
     public void doJob() throws Exception {
         Logger.info("开始生成电影静态文件");
         List<Movie> movies = Movie.find("order by no asc").fetch();

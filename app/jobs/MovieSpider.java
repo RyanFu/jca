@@ -1,6 +1,6 @@
 package jobs;
 
-import libs.DBCounter;
+import libs.Constant;
 import libs.Objects;
 import libs.WS;
 import models.Episode;
@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import play.Logger;
+import play.cache.Cache;
 import play.jobs.Job;
 import play.jobs.On;
 import play.jobs.OnApplicationStart;
@@ -38,6 +39,7 @@ public class MovieSpider extends Job {
     public void doJob() throws Exception {
         Logger.info("开始处理电影抓取Job");
         crawl();
+        Cache.delete(Constant.CACHE_PREFIX + "movies");
     }
 
     private static void crawl() {
@@ -59,7 +61,6 @@ public class MovieSpider extends Job {
                 Movie movie = Movie.find("byName", name).first();
                 if (movie == null) {
                     movie = new Movie();
-                    movie.id = DBCounter.generateUniqueCounter(Movie.class) + "";
                 }
                 movie.name = name;
                 movie.cover = cover;

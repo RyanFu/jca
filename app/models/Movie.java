@@ -1,8 +1,12 @@
 package models;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import play.db.jpa.Model;
+import services.serializers.MovieSerializer;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -10,9 +14,11 @@ import javax.persistence.Id;
  * @since 1/29/13
  */
 @Entity
+@JsonSerialize(using = MovieSerializer.class)
 public class Movie extends Model {
     @Id
-    public String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long id;
 
     /** 名称 */
     public String name;

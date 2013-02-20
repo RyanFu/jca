@@ -1,6 +1,5 @@
 package controllers.ajax;
 
-import libs.DBCounter;
 import libs.EasyMap;
 import models.Episode;
 import models.Movie;
@@ -50,7 +49,6 @@ public class Movies extends Controller {
             movie.cover_title = cover_title;
             movie.rate = rate;
             movie.no = 0;
-            movie.id = DBCounter.generateUniqueCounter(Movie.class) + "";
             movie.save();
         } else {
             renderJSON(new EasyMap<String, String>("error", "此" + name + "已经存在"));

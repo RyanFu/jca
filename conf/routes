@@ -8,6 +8,12 @@ GET     /                                       Application.index
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
+# API
+GET     /movies/list.html                            Movies.list
+GET     /movies2/list.html                           Movies.list
+GET     /movies/{id}.html                            Movies.detail
+GET     /movies2/{id}.html                           Movies.detail
+
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
 
