@@ -30,7 +30,7 @@ import java.util.*;
  * @author wujinliang
  * @since 1/29/13
  */
-//@OnApplicationStart
+@OnApplicationStart
 @On("0 0 1 * * ?")
 public class MovieSpider extends Job {
     private static ObjectMapper mapper = new ObjectMapper();
