@@ -4,11 +4,11 @@ import libs.Constant;
 import models.User;
 import models.enums.Role;
 import org.apache.commons.lang.StringUtils;
-import play.cache.Cache;
 import play.i18n.Messages;
 import play.libs.Codec;
 import play.libs.Crypto;
 import play.mvc.*;
+import services.CacheService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +34,8 @@ public class Secure extends Controller {
         String username = getCookie(Constant.COOKIE_LOGIN_USER);
         String lastLoginCookie = getCookie(Constant.COOKIE_LAST_LOGIN);
         // 当一个用户在多处登录，且有一处用户退出或修改了密码，其他地方也应该跟着同时退出登录状态，所以根据last_login这个cookie来判断
-        if (username == null || Cache.get(Constant.CACHE_USER_PREFIX + username) == null || lastLoginCookie == null
-                || !checkRememberme() || !lastLoginCookie.equals(Cache.get(Constant.CACHE_USER_LAST_LOGIN_PREFIX + username))) {
+        if (username == null || CacheService.get(Constant.CACHE_USER_PREFIX + username) == null || lastLoginCookie == null
+                || !checkRememberme() || !lastLoginCookie.equals(CacheService.get(Constant.CACHE_USER_LAST_LOGIN_PREFIX + username))) {
             // 若是ajax来的, 则直接抛出异常
             if (request.isAjax()) { // TODO: error的消息可以做成json格式, 方便客户端解析
                 error("action=reload");
@@ -68,8 +68,8 @@ public class Secure extends Controller {
         response.removeCookie(Constant.COOKIE_LAST_LOGIN);
         response.removeCookie(Constant.COOKIE_REMEMBER);
         String username = getCookie(Constant.COOKIE_LOGIN_USER);
-        Cache.delete(Constant.CACHE_USER_PREFIX + username);
-        Cache.delete(Constant.CACHE_USER_LAST_LOGIN_PREFIX + username);
+        CacheService.delete(Constant.CACHE_USER_PREFIX + username);
+        CacheService.delete(Constant.CACHE_USER_LAST_LOGIN_PREFIX + username);
         login();
     }
 
@@ -104,7 +104,7 @@ public class Secure extends Controller {
     public static User getLoginUser() {
         String username = getCookie(Constant.COOKIE_LOGIN_USER);
         if (username != null) {
-            Object user = Cache.get(Constant.CACHE_USER_PREFIX + username);
+            Object user = CacheService.get(Constant.CACHE_USER_PREFIX + username);
             if (user != null && user instanceof User) {
                 return (User) user;
             }
@@ -117,9 +117,9 @@ public class Secure extends Controller {
     public static User storeUserInfo(String username) {
         User user = User.find("byName", username).first();
 
-        Cache.set(Constant.CACHE_USER_PREFIX + username, user, Scope.COOKIE_EXPIRE);
+        CacheService.set(Constant.CACHE_USER_PREFIX + username, user, Scope.COOKIE_EXPIRE);
         String lastLogin = System.currentTimeMillis() + "";
-        Cache.set(Constant.CACHE_USER_LAST_LOGIN_PREFIX + username, lastLogin, Scope.COOKIE_EXPIRE);
+        CacheService.set(Constant.CACHE_USER_LAST_LOGIN_PREFIX + username, lastLogin, Scope.COOKIE_EXPIRE);
 
         // 设置cookie
         response.setCookie(Constant.COOKIE_LOGIN_USER, username, Scope.COOKIE_EXPIRE);
@@ -129,7 +129,7 @@ public class Secure extends Controller {
     }
 
     private static boolean check(String username, Check check) {
-        User user = (User) Cache.get(Constant.CACHE_USER_PREFIX + username);
+        User user = (User) CacheService.get(Constant.CACHE_USER_PREFIX + username);
         if (user == null) user = storeUserInfo(username);
         if (user != null) {
             for (Role role : check.value()) {

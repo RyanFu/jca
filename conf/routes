@@ -9,10 +9,10 @@ GET     /                                       Application.index
 GET     /favicon.ico                            404
 
 # API
-GET     /movies/list.html                            Movies.list
-GET     /movies2/list.html                           Movies.list
-GET     /movies/{id}.html                            Movies.detail
-GET     /movies2/{id}.html                           Movies.detail
+GET     /movies/list.html                            api.Movies.list
+GET     /movies2/list.html                           api.Movies.list
+GET     /movies/{id}.html                            api.Movies.detail
+GET     /movies2/{id}.html                           api.Movies.detail
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public

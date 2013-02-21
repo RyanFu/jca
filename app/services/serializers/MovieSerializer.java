@@ -26,6 +26,7 @@ public class MovieSerializer extends JsonSerializer<Movie> {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", m.id);
         map.put("name", m.name);
+        map.put("no", m.no);
         map.put("cover", m.cover);
         map.put("cover_title", m.cover_title);
         map.put("rate", m.rate);

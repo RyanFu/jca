@@ -15,11 +15,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import play.Logger;
-import play.cache.Cache;
+import play.db.jpa.JPA;
 import play.jobs.Job;
 import play.jobs.On;
 import play.jobs.OnApplicationStart;
+import services.CacheService;
 
+import javax.persistence.EntityTransaction;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -28,7 +30,7 @@ import java.util.*;
  * @author wujinliang
  * @since 1/29/13
  */
-@OnApplicationStart
+//@OnApplicationStart
 @On("0 0 1 * * ?")
 public class MovieSpider extends Job {
     private static ObjectMapper mapper = new ObjectMapper();
@@ -39,7 +41,7 @@ public class MovieSpider extends Job {
     public void doJob() throws Exception {
         Logger.info("开始处理电影抓取Job");
         crawl();
-        Cache.delete(Constant.CACHE_PREFIX + "movies");
+        CacheService.delete(Constant.CACHE_PREFIX + "movies");
     }
 
     private static void crawl() {
@@ -66,7 +68,14 @@ public class MovieSpider extends Job {
                 movie.cover = cover;
                 movie.cover_title = coverTitle;
                 movie.details = mapper.writeValueAsString(getDetails(movie, "http://video.baidu.com/v?word=" + URLEncoder.encode("美剧 " + name, "GBK")));
+
+                EntityTransaction transaction = JPA.em().getTransaction();
+                if (!transaction.isActive()) {
+                    transaction.begin();
+                }
                 movie.save();
+                JPA.em().flush();
+                transaction.commit();
             } catch (Exception e) {
                 Logger.error(e.getMessage(), e);
             }

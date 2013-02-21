@@ -16,13 +16,13 @@ public class Proxy {
 
     public static ProxyEntry getRandomProxy() {
         if (entries.size() < 10) {
-            List<Map> datas = Mongodb.find("proxy", new EasyMap("status", 1));
-            for (Map data : datas) {
-                ProxyEntry entry = new ProxyEntry();
-                entry.host = data.get("ip").toString();
-                entry.port = NumberUtils.toInt(data.get("port").toString());
-                entries.add(entry);
-            }
+//            List<Map> datas = Mongodb.find("proxy", new EasyMap("status", 1));
+//            for (Map data : datas) {
+//                ProxyEntry entry = new ProxyEntry();
+//                entry.host = data.get("ip").toString();
+//                entry.port = NumberUtils.toInt(data.get("port").toString());
+//                entries.add(entry);
+//            }
         }
         return entries.isEmpty() ? null : entries.get(RandomUtils.nextInt(entries.size()));
     }

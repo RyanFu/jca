@@ -4,10 +4,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import play.db.jpa.Model;
 import services.serializers.MovieSerializer;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * @author wujinliang
@@ -16,9 +13,6 @@ import javax.persistence.Id;
 @Entity
 @JsonSerialize(using = MovieSerializer.class)
 public class Movie extends Model {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
 
     /** 名称 */
     public String name;
@@ -36,5 +30,6 @@ public class Movie extends Model {
     public int no;
 
     /** 电影详细信息，包括了几部几集 */
+    @Lob
     public String details;
 }

@@ -30,7 +30,7 @@ public class Movies extends Controller {
         for (String s : orders) {
             String[] idAndNo = StringUtils.split(s, "=");
             if (idAndNo.length == 2) {
-                Movie movie = Movie.findById(idAndNo[0]);
+                Movie movie = Movie.findById(NumberUtils.toLong(idAndNo[0]));
                 if (movie != null) {
                     movie.no = NumberUtils.toInt(idAndNo[1]);
                     movie.save();

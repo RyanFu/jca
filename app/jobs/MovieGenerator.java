@@ -1,6 +1,5 @@
 package jobs;
 
-import libs.DBCounter;
 import libs.EasyMap;
 import models.Movie;
 import models.MovieItem;
@@ -63,7 +62,7 @@ public class MovieGenerator {
             settingData.add(new EasyMap<String, Object>("title", setting.title).easyPut("type", setting.type).easyPut("value", setting.value));
         }
 
-        Long count = DBCounter.generateUniqueCounter(Setting.class);
+        Long count = 0L;//DBCounter.generateUniqueCounter(Setting.class);
         String map = mapper.writeValueAsString(new EasyMap<String, Object>("checksum", count + "").easyPut("data", data).easyPut("setting", settingData));
         Logger.info("正在上传文件:" + movies.size());
         IOUtils.write(map, new FileOutputStream(new File(DEST_FOLDER, "list.html")), "UTF-8");

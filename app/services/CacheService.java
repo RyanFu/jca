@@ -1,25 +1,27 @@
 package services;
 
+import com.sina.sae.memcached.SaeMemcache;
 import libs.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import play.Logger;
 import play.Play;
-import play.cache.Cache;
+import play.libs.Time;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * @author wujinliang
  * @since 9/20/12
  */
 public class CacheService {
+    private static SaeMemcache mc = new SaeMemcache("127.0.0.1", 11211);
     private static ObjectMapper mapper = new ObjectMapper();
     static {
         if (!"prod".equalsIgnoreCase(Play.id)) {
             mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
         }
+        mc.init();
     }
 
     /**
@@ -40,7 +42,7 @@ public class CacheService {
         try {
             String cacheName = callback.getCacheName();
             if (StringUtils.isNotBlank(cacheName)) {
-                Object obj = Cache.get(cacheName);
+                Object obj = mc.get(cacheName);
                 if (obj != null) {
                     if (!jsonify) obj = mapper.readValue(obj.toString(), Object.class);
                 } else {
@@ -54,7 +56,7 @@ public class CacheService {
                         }
                         // obj若是列表类型且不为空，则加入缓存中或者obj不是列表类型的也加入缓存中
                         if (!(obj instanceof Collection) || !((Collection) obj).isEmpty()) {
-                            Cache.set(cacheName, value, callback.getExpireTime());
+                            set(cacheName, value, callback.getExpireTime());
                             callback.persist(cacheName, obj);
                         }
                         if (jsonify) obj = value;
@@ -69,7 +71,15 @@ public class CacheService {
         return null;
     }
 
-    public static void deleteModel(Map<String, Object> condition) {
+    public static void delete(String key) {
+        mc.delete(key);
+    }
 
+    public static Object get(String key) {
+        return mc.get(key);
+    }
+
+    public static void set(String key, Object value, String expire) {
+        mc.set(key, value, Time.parseDuration(expire));
     }
 }

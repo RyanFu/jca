@@ -6,15 +6,11 @@ import libs.Constant;
 import libs.EasyMap;
 import models.Movie;
 import models.Setting;
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import play.db.jpa.JPABase;
-import play.modules.morphia.Model;
 import play.mvc.Controller;
 import play.mvc.With;
 import services.CacheService;
 import services.DefaultCacheCallback;
-import services.DtoItem;
 import services.serializers.MovieSerializer;
 
 import java.util.List;
@@ -43,7 +39,7 @@ public class Movies extends Controller {
             @Override
             public Map execute()throws Exception {
                 List<Movie> movies = Movie.find("order by no asc").fetch();
-                return new EasyMap<String, Object>("data", movies).easyPut("setting", Setting.all()).easyPut("checksum", "1");
+                return new EasyMap<String, Object>("data", movies).easyPut("setting", Setting.all().fetch()).easyPut("checksum", "1");
             }
         }));
     }
