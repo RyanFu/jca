@@ -2,6 +2,7 @@ package controllers;
 
 import models.Movie;
 import models.enums.Role;
+import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import play.libs.WS;
 import play.mvc.Controller;
@@ -13,7 +14,7 @@ import controllers.withes.Secure;
 import java.util.List;
 import java.util.Map;
 
-@With({LogPrinter.class, Secure.class})
+@With({LogPrinter.class})
 public class Application extends Controller {
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -25,7 +26,7 @@ public class Application extends Controller {
 
     @Check({Role.Operator})
     public static void detail(String id) throws Exception {
-        Movie movie = Movie.findById(id);
+        Movie movie = Movie.findById(NumberUtils.toLong(id));
         List<Map> details = mapper.readValue(movie.details, List.class);
         render(movie, details);
     }

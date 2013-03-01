@@ -1,5 +1,6 @@
-package jobs;
+package controllers;
 
+import jobs.MovieGenerator;
 import libs.Constant;
 import libs.Objects;
 import libs.WS;
@@ -16,9 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import play.Logger;
 import play.db.jpa.JPA;
-import play.jobs.Job;
-import play.jobs.On;
-import play.jobs.OnApplicationStart;
+import play.mvc.Controller;
 import services.CacheService;
 
 import javax.persistence.EntityTransaction;
@@ -30,17 +29,21 @@ import java.util.*;
  * @author wujinliang
  * @since 1/29/13
  */
-//@OnApplicationStart
-//@On("0 0 1 * * ?")
-public class MovieSpider {
+public class MovieSpiders extends Controller {
     private static ObjectMapper mapper = new ObjectMapper();
     private static int page = 1;
     private static final String url_tpl = "http://video.baidu.com/tvplay/?area=%C3%C0%B9%FA&actor=&type=&start=&order=hot&pn=";
 
-    public void doJob() throws Exception {
+    public static void run() throws Exception {
         Logger.info("开始处理电影抓取Job");
         crawl();
         CacheService.delete(Constant.CACHE_PREFIX + "movies");
+        renderText("OK");
+    }
+
+    public static void generate() throws Exception {
+        new MovieGenerator().doJob();
+        renderText("OK");
     }
 
     private static void crawl() {

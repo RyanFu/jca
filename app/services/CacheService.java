@@ -15,13 +15,13 @@ import java.util.Collection;
  * @since 9/20/12
  */
 public class CacheService {
-    private static SaeMemcache mc = new SaeMemcache("127.0.0.1", 11211);
+    private static SaeMemcache mc = null;//new SaeMemcache("127.0.0.1", 11211);
     private static ObjectMapper mapper = new ObjectMapper();
     static {
         if (!"prod".equalsIgnoreCase(Play.id)) {
             mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
         }
-        mc.init();
+//        mc.init();
     }
 
     /**
@@ -42,7 +42,7 @@ public class CacheService {
         try {
             String cacheName = callback.getCacheName();
             if (StringUtils.isNotBlank(cacheName)) {
-                Object obj = mc.get(cacheName);
+                Object obj = null;//mc.get(cacheName);
                 if (obj != null) {
                     if (!jsonify) obj = mapper.readValue(obj.toString(), Object.class);
                 } else {
@@ -72,14 +72,14 @@ public class CacheService {
     }
 
     public static void delete(String key) {
-        mc.delete(key);
+        //mc.delete(key);
     }
 
     public static Object get(String key) {
-        return mc.get(key);
+        return null;//mc.get(key);
     }
 
     public static void set(String key, Object value, String expire) {
-        mc.set(key, value, Time.parseDuration(expire));
+        //mc.set(key, value, Time.parseDuration(expire));
     }
 }
