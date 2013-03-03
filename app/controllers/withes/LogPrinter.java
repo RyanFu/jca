@@ -17,6 +17,6 @@ public class LogPrinter extends Controller {
     public static void log() {
         Map<String, String> map = request.params.allSimple();
         map.remove("body");
-        Logger.info("request url: %s, param:" + map, request.url);
+        Logger.info("request url: " + request.url + ", param:" + map);
     }
 }
