@@ -14,7 +14,7 @@ import controllers.withes.Secure;
 import java.util.List;
 import java.util.Map;
 
-@With({LogPrinter.class})
+@With({LogPrinter.class, Secure.class})
 public class Application extends Controller {
     private static final ObjectMapper mapper = new ObjectMapper();
 
