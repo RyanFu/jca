@@ -102,10 +102,25 @@ public class MovieSpiders extends Controller {
                 Map map = mapper.readValue(block, Map.class);
                 Object id = map.get("id");
                 List<Map> sites = (List<Map>) map.get("sites");
+                Map sohuSite = null;
+                // 优先使用sohu视频
+                for (Map site : sites) {
+                    if ("sohu.com".equalsIgnoreCase(site.get("site_url").toString())) {
+                        sohuSite = site;
+                        break;
+                    }
+                }
                 Map site = sites.get(0);
                 Object from = site.get("site_name");
                 List<Map> es = (List<Map>) site.get("episode");
-                if ("tudou.com".equals(site.get("site_url")) && sites.size() > 1) { // 土豆不支持html5
+                if (site != sohuSite && sohuSite != null) {
+                    site = sohuSite;
+                    from = site.get("site_name");
+                    String b = WS.url("http://video.baidu.com/htvplaysingles/?id=" + id + "&site=" + site.get("site_url")).get().body;
+                    es = (List<Map>)mapper.readValue(b, Map.class).get("videos");
+                }
+                // 土豆不支持html5, 去掉
+                if ("tudou.com".equals(site.get("site_url")) && sites.size() > 1) {
                     site = sites.get(1);
                     from = site.get("site_name");
                     String b = WS.url("http://video.baidu.com/htvplaysingles/?id=" + id + "&site=" + site.get("site_url")).get().body;
